@@ -100,6 +100,11 @@ def countFullLines():
             count += 1
     return count
 
+def addScore(lines):
+    #Cộng điểm theo số dòng vừa xóa và cập nhật tiêu đề cửa sổ.
+    global score
+    score += LINE_SCORES.get(lines, 0)
+    pygame.display.set_caption(f"Tetris - Score: {score}")
 
 
 screen = None
