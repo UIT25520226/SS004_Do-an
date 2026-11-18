@@ -86,6 +86,21 @@ COLORS = {
     'J': (0, 0, 240),
     'L': (240, 160, 0),
 }
+# ===================== TÍNH ĐIỂM =====================
+score = 0
+# Số điểm theo số dòng xóa cùng lúc (kiểu Tetris cổ điển)
+LINE_SCORES = {0: 0, 1: 100, 2: 300, 3: 500, 4: 800}
+
+
+def countFullLines():
+    #Đếm số dòng đã đầy trên board (gọi TRƯỚC removeLine).
+    count = 0
+    for i in range(1, H - 1):
+        if all(board[i][j] != ' ' for j in range(W)):
+            count += 1
+    return count
+
+
 
 screen = None
 font = None
