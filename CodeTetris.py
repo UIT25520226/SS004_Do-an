@@ -222,6 +222,7 @@ def main():
                 y += 1
             else:
                 block2Board()
+                addScore(countFullLines())  #thêm chức năng tính điểm vào hàm main
                 removeLine()
                 x = 5
                 y = 0
