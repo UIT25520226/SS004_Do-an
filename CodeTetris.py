@@ -165,19 +165,18 @@ def draw():
 def removeLine():
     i = H - 2
     while i > 0:
-        j = 0
-        while j < W:
-            if board[i][j] == ' ':
-                break
-            j += 1
-        if j == W:
-            for ii in range(i, 0, -1):
-                for jj in range(W):
+        if all(board[i][j] != ' ' for j in range(1, W - 1)):
+            for ii in range(i, 1, -1):
+                for jj in range(1, W - 1):
                     board[ii][jj] = board[ii - 1][jj]
-            i += 1
+
+            for jj in range(1, W - 1):
+                board[1][jj] = ' '
+
             draw()
             pygame.event.pump()
-            pygame.time.delay(200)  # _sleep(200)
+            pygame.time.delay(200) #_sleep(200)
+            i += 1  
         i -= 1
 
 
