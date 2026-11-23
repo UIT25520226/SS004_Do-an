@@ -1,5 +1,6 @@
 import random
 import pygame
+from Rotation.Rotation import rotateBlock
 
 H = 20
 W = 15
@@ -78,6 +79,8 @@ blocks = [
      "    "],
 ]
 
+currentBlock = []
+
 # Màu cho từng ký tự (thay cho việc in ký tự ra console)
 COLORS = {
     '#': (110, 110, 110),
@@ -117,7 +120,7 @@ font = None
 def canMove(dx, dy):
     for i in range(4):
         for j in range(4):
-            if blocks[b][i][j] != ' ':
+            if currentBlock[i][j] != ' ':
                 xt = x + j + dx
                 yt = y + i + dy
                 if xt < 1 or xt >= W - 1 or yt >= H - 1:
@@ -130,14 +133,14 @@ def canMove(dx, dy):
 def block2Board():
     for i in range(4):
         for j in range(4):
-            if blocks[b][i][j] != ' ':
-                board[y + i][x + j] = blocks[b][i][j]
+            if currentBlock[i][j] != ' ':
+                board[y + i][x + j] = currentBlock[i][j]
 
 
 def boardDelBlock():
     for i in range(4):
         for j in range(4):
-            if blocks[b][i][j] != ' ':
+            if currentBlock[i][j] != ' ':
                 board[y + i][x + j] = ' '
 
 
@@ -200,7 +203,7 @@ def removeLine():
     return removed_lines
 
 def main():
-    global x, y, b, screen, font
+    global x, y, b, screen, font, currentBlock
     pygame.init()
     screen = pygame.display.set_mode((W * CELL, H * CELL))
     pygame.display.set_caption("Tetris")
@@ -209,7 +212,8 @@ def main():
 
     x = 5
     y = 0
-    b = random.randrange(7)  # giữ nguyên như code gốc: rand() % 7
+    b = random.randrange(9, 16)  # I, O, T, S, Z, J, L
+    currentBlock = blocks[b].copy()
     initBoard()
 
     last_drop = pygame.time.get_ticks()
@@ -229,6 +233,8 @@ def main():
                     x += 1
                 if c == 'x' and canMove(0, 1):
                     y += 1
+                if c == 'w':
+                    rotateBlock(currentBlock, board, x, y)
                 if c == 'q':
                     running = False
 
@@ -246,7 +252,9 @@ def main():
 
                 x = 5
                 y = 0
-                b = random.randrange(7)
+                b = random.randrange(9, 16)
+                currentBlock = blocks[b].copy()
+
         block2Board()
         draw()
         clock.tick(60)
