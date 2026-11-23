@@ -5,6 +5,9 @@ from Rotation.Rotation import rotateBlock
 H = 20
 W = 15
 CELL = 30  # kích thước 1 ô (pixel)
+DROP_INTERVAL = 500       # Thời gian giữa mỗi lần rơi (ms)
+MIN_DROP_INTERVAL = 80    # Tốc độ rơi tối đa
+SPEEDUP_PER_LINE = 35     # Giảm 35 ms mỗi dòng được xóa
 
 board = [[' '] * W for _ in range(H)]
 
@@ -166,9 +169,15 @@ def draw():
 
 
 def removeLine():
+    global DROP_INTERVAL
+
+    removed_lines = 0
     i = H - 2
+
     while i > 0:
         if all(board[i][j] != ' ' for j in range(1, W - 1)):
+            removed_lines += 1
+
             for ii in range(i, 1, -1):
                 for jj in range(1, W - 1):
                     board[ii][jj] = board[ii - 1][jj]
@@ -178,10 +187,20 @@ def removeLine():
 
             draw()
             pygame.event.pump()
-            pygame.time.delay(200) #_sleep(200)
-            i += 1  
+            pygame.time.delay(200)
+
+            i += 1
+
         i -= 1
 
+    # Tăng tốc độ rơi dựa trên số dòng vừa xóa
+    if removed_lines > 0:
+        DROP_INTERVAL = max(
+            MIN_DROP_INTERVAL,
+            DROP_INTERVAL - SPEEDUP_PER_LINE * removed_lines
+        )
+
+    return removed_lines
 
 def main():
     global x, y, b, screen, font, currentBlock
@@ -221,14 +240,16 @@ def main():
 
         # tương đương _sleep(500): cứ 500ms thì khối rơi 1 ô
         now = pygame.time.get_ticks()
-        if now - last_drop >= 500:
+        if now - last_drop >= DROP_INTERVAL:
             last_drop = now
             if canMove(0, 1):
                 y += 1
             else:
                 block2Board()
-                addScore(countFullLines())  #thêm chức năng tính điểm vào hàm main
-                removeLine()
+
+                lines_removed = removeLine()
+                addScore(lines_removed)
+
                 x = 5
                 y = 0
                 b = random.randrange(9, 16)
