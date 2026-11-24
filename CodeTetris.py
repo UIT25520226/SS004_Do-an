@@ -166,7 +166,27 @@ def draw():
                 text = font.render(c, True, (0, 0, 0))
                 screen.blit(text, text.get_rect(center=rect.center))
     pygame.display.flip()
+# ===================== GIAO DIỆN Ô VUÔNG =====================
+def draw():
+    screen.fill((0, 0, 0))
+    for i in range(H):
+        for j in range(W):
+            c = board[i][j]
+            if c == ' ':
+                continue
+            px, py = j * CELL, i * CELL
+            color = COLORS[c]
 
+            # nền ô (chừa 1 pixel mỗi cạnh để các ô tách nhau rõ)
+            pygame.draw.rect(screen, color, (px + 1, py + 1, CELL - 2, CELL - 2))
+
+            # viền sáng bên trong cho ra dạng khối nổi (bỏ qua tường '#')
+            if c != '#':
+                light = tuple(min(255, v + 70) for v in color)
+                pygame.draw.rect(screen, light,
+                                 (px + 3, py + 3, CELL - 6, CELL - 6), 2)
+    pygame.display.flip()
+# =============================================================
 
 def removeLine():
     global DROP_INTERVAL
