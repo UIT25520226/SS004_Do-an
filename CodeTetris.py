@@ -2,6 +2,47 @@ import random
 import pygame
 from Rotation.Rotation import rotateBlock
 
+
+SHAPES = {
+    "I": ["    ", "IIII", "    ", "    "],
+    "O": ["    ", " OO ", " OO ", "    "],
+    "T": ["    ", " T  ", "TTT ", "    "],
+    "S": ["    ", " SS ", "SS  ", "    "],
+    "Z": ["    ", "ZZ  ", " ZZ ", "    "],
+    "J": ["    ", "J   ", "JJJ ", "    "],
+    "L": ["    ", "  L ", "LLL ", "    "],
+}
+
+class Block:
+    def __init__(self, kind, x=5, y=0): ...
+    def cells(self): ...          # trả về list (hàng, cột, ký tự) các ô có khối
+    def rotated(self): ...        # trả về shape mới sau khi xoay phải 90 độ (không sửa self)
+    def rotate(self, board): ...  # xoay nếu board.can_place cho phép, trả về True/False
+
+
+class Board:
+    def __init__(self, w=15, h=20): ...
+    def can_place(self, block, dx=0, dy=0, shape=None): ...  # True/False
+    def place(self, block): ...        # ghi khối vào lưới khi chạm đáy
+    def clear_lines(self): ...         # xóa dòng đầy, trả về số dòng đã xóa
+
+
+class ScoreManager:
+    def __init__(self): ...            # score = 0, drop_interval = 500
+    def add_lines(self, lines): ...    # cộng điểm + tăng tốc
+    # thuộc tính: score, drop_interval
+
+
+class Renderer:
+    def __init__(self, board): ...
+    def draw(self, board, block, score): ...   # vẽ board, rồi block, rồi điểm
+
+
+class Game:
+    def __init__(self): ...
+    def handle_input(self): ...
+    def update(self): ...              # rơi, chạm đáy, sinh khối mới
+    def run(self): ...
 H = 20
 W = 15
 CELL = 30  # kích thước 1 ô (pixel)
