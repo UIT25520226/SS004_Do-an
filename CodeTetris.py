@@ -43,8 +43,27 @@ class Board:
                     if self.grid[yt][xt] != ' ':
                         return False
         return True
-    def place(self, block): ...        # ghi khối vào lưới khi chạm đáy
-    def clear_lines(self): ...         # xóa dòng đầy, trả về số dòng đã xóa
+    def place(self, block):
+        # ghi khối vào lưới khi chạm đáy
+        for i in range(4):
+            for j in range(4):
+                if block.shape[i][j] != ' ':
+                    self.grid[block.y + i][block.x + j] = block.shape[i][j]
+    def clear_lines(self):
+            # xóa các dòng đầy, trả về số dòng đã xóa
+        removed = 0
+        i = self.h - 2
+        while i > 0:
+            if all(self.grid[i][j] != ' ' for j in range(1, self.w - 1)):
+                removed += 1
+                for ii in range(i, 1, -1):
+                    for jj in range(1, self.w - 1):
+                        self.grid[ii][jj] = self.grid[ii - 1][jj]
+                for jj in range(1, self.w - 1):
+                    self.grid[1][jj] = ' '
+                i += 1          # kiểm tra lại dòng này vì vừa có dòng mới dồn xuống
+            i -= 1
+        return removed
 
 
 class ScoreManager:
