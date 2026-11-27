@@ -22,37 +22,50 @@ class Block:
 
 class Board:
     def __init__(self, w=15, h=20):
-        self.w, self.h = w, h
-        # Tạo lưới bằng list comprehension thay vì 2 vòng for lồng nhau
-        self.grid = [
-            ['#' if (r in (0, h - 1) or c in (0, w - 1)) else ' ' for c in range(w)]
-            for r in range(h)
-        ]
+        self.w = w
+        self.h = h
+        # lưới có tường '#' ở viền, bên trong là ' ' (giống initBoard cũ)
+        self.grid = [[' '] * w for _ in range(h)]
+        for i in range(h):
+            for j in range(w):
+                if i == 0 or i == h - 1 or j == 0 or j == w - 1:
+                    self.grid[i][j] = '#'
 
-    def can_place(self, block, dx=0, dy=0, shape=None):
-        target_shape = shape if shape is not None else block.shape
-        for r in range(4):
-            for c in range(4):
-                if target_shape[r][c] != ' ':
-                    nx, ny = block.x + c + dx, block.y + r + dy
-                    if not (1 <= nx < self.w - 1 and 0 <= ny < self.h - 1):
-                        return False
-                    if self.grid[ny][nx] != ' ':
-                        return False
-        return True
+        def can_place(self, block, dx=0, dy=0, shape=None):
+            # True nếu khối (dịch dx, dy, và dùng shape nếu có) không vướng tường hay ô đã đặt
+            target_shape = shape if shape is not None else block.shape
+            for i in range(4):
+                for j in range(4):
+                    if target_shape[i][j] != ' ':
+                        xt = block.x + j + dx
+                        yt = block.y + i + dy
+                        if not (1 <= xt < self.w - 1 and 0 <= yt < self.h - 1):
+                            return False
+                        if self.grid[yt][xt] != ' ':
+                            return False
+            return True
 
-    def place(self, block):
-        for r in range(4):
-            for c in range(4):
-                if block.shape[r][c] != ' ':
-                    self.grid[block.y + r][block.x + c] = block.shape[r][c]
+        def place(self, block):
+            # ghi khối vào lưới khi chạm đáy
+            for i in range(4):
+                for j in range(4):
+                    if block.shape[i][j] != ' ':
+                        self.grid[block.y + i][block.x + j] = block.shape[i][j]
 
-    def clear_lines(self):
-        # Lọc giữ lại các dòng chưa đầy, chèn dòng trống lên trên
-        inner_rows = [row for row in self.grid[1:-1] if any(cell == ' ' for cell in row[1:-1])]
-        removed = (self.h - 2) - len(inner_rows)
-        empty_row = ['#'] + [' '] * (self.w - 2) + ['#']
-        self.grid = [self.grid[0]] + [empty_row[:] for _ in range(removed)] + inner_rows + [self.grid[-1]]
+        def clear_lines(self):
+            # xóa các dòng đầy, trả về số dòng đã xóa
+            removed = 0
+            i = self.h - 2
+            while i > 0:
+                if all(self.grid[i][j] != ' ' for j in range(1, self.w - 1)):
+                    removed += 1
+                    for ii in range(i, 1, -1):
+                        for jj in range(1, self.w - 1):
+                            self.grid[ii][jj] = self.grid[ii - 1][jj]
+                    for jj in range(1, self.w - 1):
+    			self.grid[1][jj] = ' '
+                    i += 1          # kiểm tra lại dòng này vì vừa có dòng mới dồn xuống
+                i -= 1
         return removed
 
 
