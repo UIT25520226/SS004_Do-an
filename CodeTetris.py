@@ -21,8 +21,28 @@ class Block:
 
 
 class Board:
-    def __init__(self, w=15, h=20): ...
-    def can_place(self, block, dx=0, dy=0, shape=None): ...  # True/False
+    def __init__(self, w=15, h=20):
+        self.w = w
+        self.h = h
+        # lưới có tường '#' ở viền, bên trong là ' ' (giống initBoard cũ)
+        self.grid = [[' '] * w for _ in range(h)]
+        for i in range(h):
+            for j in range(w):
+                if i == 0 or i == h - 1 or j == 0 or j == w - 1:
+                    self.grid[i][j] = '#'
+    def can_place(self, block, dx=0, dy=0, shape=None): 
+        # True nếu khối (dịch dx, dy, và dùng shape nếu có) không vướng tường hay ô đã đặt
+        shape = shape or block.shape
+        for i in range(4):
+            for j in range(4):
+                if shape[i][j] != ' ':
+                    xt = block.x + j + dx
+                    yt = block.y + i + dy
+                    if xt < 1 or xt >= self.w - 1 or yt < 0 or yt >= self.h - 1:
+                        return False
+                    if self.grid[yt][xt] != ' ':
+                        return False
+        return True
     def place(self, block): ...        # ghi khối vào lưới khi chạm đáy
     def clear_lines(self): ...         # xóa dòng đầy, trả về số dòng đã xóa
 
