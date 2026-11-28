@@ -34,7 +34,13 @@ class Block:
             for j in range(4):
                 new[j][3 - i] = self.shape[i][j]
         return [''.join(row) for row in new]
-    def rotate(self, board): ...  # xoay nếu board.can_place cho phép, trả về True/False
+    def rotate(self, board):
+        # xoay nếu board cho phép, trả về True/False
+        new_shape = self.rotated()
+        if board.can_place(self, shape=new_shape):
+            self.shape = new_shape
+            return True
+        return False
 
 
 class Board:
