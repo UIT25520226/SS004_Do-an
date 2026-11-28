@@ -14,7 +14,11 @@ SHAPES = {
 }
 
 class Block:
-    def __init__(self, kind, x=5, y=0): ...
+    def __init__(self, kind, x=5, y=0):
+        self.kind = kind                  # "I", "O", "T", "S", "Z", "J", "L"
+        self.x = x                        # cột góc trái trên của ma trận 4x4
+        self.y = y                        # hàng góc trái trên của ma trận 4x4
+        self.shape = list(SHAPES[kind])   # copy để không sửa SHAPES gốc
     def cells(self): ...          # trả về list (hàng, cột, ký tự) các ô có khối
     def rotated(self): ...        # trả về shape mới sau khi xoay phải 90 độ (không sửa self)
     def rotate(self, board): ...  # xoay nếu board.can_place cho phép, trả về True/False
