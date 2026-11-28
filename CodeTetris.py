@@ -84,14 +84,15 @@ class Game:
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.board = Board()
-        self.score = ScoreManager()
-        self.renderer = Renderer(self.board)
-        self.block = self._new_block()
-        self.last_drop = pygame.time.get_ticks()
-        self.running = True
+        self.board = Board()                      # bàn chơi chính
+        self.score = ScoreManager()               # quản lý điểm và tốc độ rơi
+        self.renderer = Renderer(self.board)      # bộ vẽ giao diện
+        self.block = self._new_block()            # khối đang rơi hiện tại
+        self.last_drop = pygame.time.get_ticks()  # thời điểm rơi gần nhất (ms)
+        self.running = True                       # trạng thái vòng lặp game
 
     def _new_block(self):
+        # tạo ngẫu nhiên 1 trong 7 loại khối Tetris từ SHAPES
         return Block(random.choice(list(SHAPES.keys())))
 
     def handle_input(self): ...
