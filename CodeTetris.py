@@ -81,6 +81,8 @@ class Renderer:
 
 
 class Game:
+    FPS = 60
+
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
@@ -151,13 +153,15 @@ class Game:
                 self._lock_block()
 
     def run(self):
-        # vòng lặp chính của trò chơi
-        while self.running:
-            self.handle_input()
-            self.update()
-            self.renderer.draw(self.board, self.block, self.score.score)
-            self.clock.tick(60)
-        pygame.quit()
+        # vòng lặp chính của trò chơi, đảm bảo đóng cửa sổ pygame an toàn khi kết thúc
+        try:
+            while self.running:
+                self.handle_input()
+                self.update()
+                self.renderer.draw(self.board, self.block, self.score.score)
+                self.clock.tick(self.FPS)
+        finally:
+            pygame.quit()
 H = 20
 W = 15
 CELL = 30  # kích thước 1 ô (pixel)
