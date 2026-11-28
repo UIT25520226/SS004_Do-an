@@ -124,7 +124,17 @@ class Game:
                 elif c == 'q' or event.key == pygame.K_ESCAPE:
                     self.running = False
 
-    def update(self): ...              # rơi, chạm đáy, sinh khối mới
+    def update(self):
+        # tự động cho khối rơi theo chu kỳ drop_interval
+        now = pygame.time.get_ticks()
+        if now - self.last_drop >= self.score.drop_interval:
+            self.last_drop = now
+            if not self._try_move(0, 1):
+                self.board.place(self.block)
+                removed = self.board.clear_lines()
+                self.score.add_lines(removed)
+                self.block = self._new_block()
+
     def run(self): ...
 H = 20
 W = 15
