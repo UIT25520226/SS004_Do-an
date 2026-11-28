@@ -95,6 +95,14 @@ class Game:
         # tạo ngẫu nhiên 1 trong 7 loại khối Tetris từ SHAPES
         return Block(random.choice(list(SHAPES.keys())))
 
+    def _try_move(self, dx, dy):
+        # dịch khối theo (dx, dy) nếu không va chạm, trả về True nếu dịch được
+        if self.board.can_place(self.block, dx=dx, dy=dy):
+            self.block.x += dx
+            self.block.y += dy
+            return True
+        return False
+
     def handle_input(self):
         # lắng nghe sự kiện bàn phím và cửa sổ
         for event in pygame.event.get():
@@ -102,12 +110,12 @@ class Game:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
                 c = event.unicode
-                if c == 'a' and self.board.can_place(self.block, dx=-1, dy=0):
-                    self.block.x -= 1
-                elif c == 'd' and self.board.can_place(self.block, dx=1, dy=0):
-                    self.block.x += 1
-                elif c == 'x' and self.board.can_place(self.block, dx=0, dy=1):
-                    self.block.y += 1
+                if c == 'a':
+                    self._try_move(-1, 0)
+                elif c == 'd':
+                    self._try_move(1, 0)
+                elif c == 'x':
+                    self._try_move(0, 1)
                 elif c == 'w':
                     self.block.rotate(self.board)
                 elif c == 'q':
