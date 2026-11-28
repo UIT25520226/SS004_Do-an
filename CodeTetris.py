@@ -103,6 +103,16 @@ class Game:
             return True
         return False
 
+    def _lock_block(self):
+        # cố định khối chạm đáy vào bảng, xóa dòng đầy và sinh khối mới
+        self.board.place(self.block)
+        removed = self.board.clear_lines()
+        self.score.add_lines(removed)
+        self.block = self._new_block()
+        self.last_drop = pygame.time.get_ticks()
+        if not self.board.can_place(self.block):
+            self.running = False
+
     def handle_input(self):
         # lắng nghe sự kiện bàn phím (A/D/X/W, phím mũi tên, Space) và đóng cửa sổ
         for event in pygame.event.get():
@@ -121,6 +131,7 @@ class Game:
                 elif event.key == pygame.K_SPACE:
                     while self._try_move(0, 1):
                         pass
+                    self._lock_block()
                 elif c == 'q' or event.key == pygame.K_ESCAPE:
                     self.running = False
 
@@ -130,13 +141,7 @@ class Game:
         if now - self.last_drop >= self.score.drop_interval:
             self.last_drop = now
             if not self._try_move(0, 1):
-                self.board.place(self.block)
-                removed = self.board.clear_lines()
-                self.score.add_lines(removed)
-                self.block = self._new_block()
-                # kết thúc game nếu khối mới sinh ra đã bị vướng ngay tại đỉnh bảng
-                if not self.board.can_place(self.block):
-                    self.running = False
+                self._lock_block()
 
     def run(self): ...
 H = 20
