@@ -27,7 +27,13 @@ class Block:
                 if self.shape[i][j] != ' ':
                     result.append((self.y + i, self.x + j, self.shape[i][j]))
         return result
-    def rotated(self): ...        # trả về shape mới sau khi xoay phải 90 độ (không sửa self)
+    def rotated(self):
+        # trả về shape mới sau khi xoay phải 90 độ, không sửa self
+        new = [[' '] * 4 for _ in range(4)]
+        for i in range(4):
+            for j in range(4):
+                new[j][3 - i] = self.shape[i][j]
+        return [''.join(row) for row in new]
     def rotate(self, board): ...  # xoay nếu board.can_place cho phép, trả về True/False
 
 
