@@ -104,21 +104,21 @@ class Game:
         return False
 
     def handle_input(self):
-        # lắng nghe sự kiện bàn phím và cửa sổ
+        # lắng nghe sự kiện bàn phím (A/D/X/W hoặc phím mũi tên) và sự kiện đóng cửa sổ
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                c = event.unicode
-                if c == 'a':
+                c = event.unicode.lower()
+                if c == 'a' or event.key == pygame.K_LEFT:
                     self._try_move(-1, 0)
-                elif c == 'd':
+                elif c == 'd' or event.key == pygame.K_RIGHT:
                     self._try_move(1, 0)
-                elif c == 'x':
+                elif c == 'x' or event.key == pygame.K_DOWN:
                     self._try_move(0, 1)
-                elif c == 'w':
+                elif c == 'w' or event.key == pygame.K_UP:
                     self.block.rotate(self.board)
-                elif c == 'q':
+                elif c == 'q' or event.key == pygame.K_ESCAPE:
                     self.running = False
 
     def update(self): ...              # rơi, chạm đáy, sinh khối mới
