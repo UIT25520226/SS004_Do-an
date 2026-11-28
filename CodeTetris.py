@@ -81,7 +81,15 @@ class Renderer:
 
 
 class Game:
-    def __init__(self): ...
+    def __init__(self):
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.board = Board()
+        self.score = ScoreManager()
+        self.renderer = Renderer(self.board)
+        self.block = Block(random.choice(list(SHAPES.keys())))
+        self.last_drop = pygame.time.get_ticks()
+        self.running = True
     def handle_input(self): ...
     def update(self): ...              # rơi, chạm đáy, sinh khối mới
     def run(self): ...
