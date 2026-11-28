@@ -90,6 +90,7 @@ class Game:
         self.block = self._new_block()            # khối đang rơi hiện tại
         self.last_drop = pygame.time.get_ticks()  # thời điểm rơi gần nhất (ms)
         self.running = True                       # trạng thái vòng lặp game
+        self.paused = False                       # trạng thái tạm dừng game
 
     def _new_block(self):
         # tạo ngẫu nhiên 1 trong 7 loại khối Tetris từ SHAPES
@@ -114,29 +115,35 @@ class Game:
             self.running = False
 
     def handle_input(self):
-        # lắng nghe sự kiện bàn phím (A/D/X/W, phím mũi tên, Space) và đóng cửa sổ
+        # lắng nghe sự kiện bàn phím (A/D/X/W, phím mũi tên, Space, P) và đóng cửa sổ
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
                 c = event.unicode.lower()
-                if c == 'a' or event.key == pygame.K_LEFT:
-                    self._try_move(-1, 0)
-                elif c == 'd' or event.key == pygame.K_RIGHT:
-                    self._try_move(1, 0)
-                elif c == 'x' or event.key == pygame.K_DOWN:
-                    self._try_move(0, 1)
-                elif c == 'w' or event.key == pygame.K_UP:
-                    self.block.rotate(self.board)
-                elif event.key == pygame.K_SPACE:
-                    while self._try_move(0, 1):
-                        pass
-                    self._lock_block()
-                elif c == 'q' or event.key == pygame.K_ESCAPE:
+                if c == 'q' or event.key == pygame.K_ESCAPE:
                     self.running = False
+                elif c == 'p':
+                    self.paused = not self.paused
+                    self.last_drop = pygame.time.get_ticks()
+                elif not self.paused:
+                    if c == 'a' or event.key == pygame.K_LEFT:
+                        self._try_move(-1, 0)
+                    elif c == 'd' or event.key == pygame.K_RIGHT:
+                        self._try_move(1, 0)
+                    elif c == 'x' or event.key == pygame.K_DOWN:
+                        self._try_move(0, 1)
+                    elif c == 'w' or event.key == pygame.K_UP:
+                        self.block.rotate(self.board)
+                    elif event.key == pygame.K_SPACE:
+                        while self._try_move(0, 1):
+                            pass
+                        self._lock_block()
 
     def update(self):
-        # tự động cho khối rơi theo chu kỳ drop_interval
+        # tự động cho khối rơi theo chu kỳ drop_interval khi không tạm dừng
+        if self.paused:
+            return
         now = pygame.time.get_ticks()
         if now - self.last_drop >= self.score.drop_interval:
             self.last_drop = now
