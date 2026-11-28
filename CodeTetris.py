@@ -134,6 +134,9 @@ class Game:
                 removed = self.board.clear_lines()
                 self.score.add_lines(removed)
                 self.block = self._new_block()
+                # kết thúc game nếu khối mới sinh ra đã bị vướng ngay tại đỉnh bảng
+                if not self.board.can_place(self.block):
+                    self.running = False
 
     def run(self): ...
 H = 20
