@@ -143,7 +143,14 @@ class Game:
             if not self._try_move(0, 1):
                 self._lock_block()
 
-    def run(self): ...
+    def run(self):
+        # vòng lặp chính của trò chơi
+        while self.running:
+            self.handle_input()
+            self.update()
+            self.renderer.draw(self.board, self.block, self.score.score)
+            self.clock.tick(60)
+        pygame.quit()
 H = 20
 W = 15
 CELL = 30  # kích thước 1 ô (pixel)
