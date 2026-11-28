@@ -87,9 +87,13 @@ class Game:
         self.board = Board()
         self.score = ScoreManager()
         self.renderer = Renderer(self.board)
-        self.block = Block(random.choice(list(SHAPES.keys())))
+        self.block = self._new_block()
         self.last_drop = pygame.time.get_ticks()
         self.running = True
+
+    def _new_block(self):
+        return Block(random.choice(list(SHAPES.keys())))
+
     def handle_input(self): ...
     def update(self): ...              # rơi, chạm đáy, sinh khối mới
     def run(self): ...
